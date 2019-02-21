@@ -1,4 +1,4 @@
-package IO;
+package io;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
