@@ -2,7 +2,6 @@ package netty.websocket;
 
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http2.HttpUtil;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedNioFile;
 
@@ -43,8 +42,9 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
         ctx.close();
     }
 
+
     @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
         if (wsUri.equalsIgnoreCase(fullHttpRequest.uri())) {
             channelHandlerContext.fireChannelRead(fullHttpRequest.retain());
         } else {
