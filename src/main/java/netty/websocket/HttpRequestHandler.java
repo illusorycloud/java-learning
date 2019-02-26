@@ -44,35 +44,35 @@ public class HttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
-        if (wsUri.equalsIgnoreCase(fullHttpRequest.uri())) {
-            channelHandlerContext.fireChannelRead(fullHttpRequest.retain());
-        } else {
-            if (HttpUtil.is100ContinueExpected(fullHttpRequest)) {
-                send100Continue(channelHandlerContext);
-            }
-
-            RandomAccessFile r = new RandomAccessFile(INDEX, "r");
-            DefaultFullHttpResponse response = new DefaultFullHttpResponse(fullHttpRequest.protocolVersion(), HttpResponseStatus.OK);
-            //设置响应头
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=UTF-8");
-            boolean keepAlive = HttpUtil.isKeepAlive(fullHttpRequest);
-            if (keepAlive) {
-                response.headers().set(HttpHeaderNames.CONTENT_LENGTH, r.length());
-                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            }
-            channelHandlerContext.write(response);
-            //判断是否有ssl 没有就使用DefaultFileRegion 否则ChunkedNioFile
-            if (channelHandlerContext.pipeline().get(SslHandler.class) == null) {
-                channelHandlerContext.write(new DefaultFileRegion(r.getChannel(), 0, r.length()));
-            } else {
-                channelHandlerContext.write(new ChunkedNioFile(r.getChannel()));
-            }
-            ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
-            if (!keepAlive) {
-                channelFuture.addListener(ChannelFutureListener.CLOSE);
-            }
-
-        }
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
+//        if (wsUri.equalsIgnoreCase(fullHttpRequest.uri())) {
+//            channelHandlerContext.fireChannelRead(fullHttpRequest.retain());
+//        } else {
+//            if (HttpUtil.is100ContinueExpected(fullHttpRequest)) {
+//                send100Continue(channelHandlerContext);
+//            }
+//
+//            RandomAccessFile r = new RandomAccessFile(INDEX, "r");
+//            DefaultFullHttpResponse response = new DefaultFullHttpResponse(fullHttpRequest.protocolVersion(), HttpResponseStatus.OK);
+//            //设置响应头
+//            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=UTF-8");
+//            boolean keepAlive = HttpUtil.isKeepAlive(fullHttpRequest);
+//            if (keepAlive) {
+//                response.headers().set(HttpHeaderNames.CONTENT_LENGTH, r.length());
+//                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+//            }
+//            channelHandlerContext.write(response);
+//            //判断是否有ssl 没有就使用DefaultFileRegion 否则ChunkedNioFile
+//            if (channelHandlerContext.pipeline().get(SslHandler.class) == null) {
+//                channelHandlerContext.write(new DefaultFileRegion(r.getChannel(), 0, r.length()));
+//            } else {
+//                channelHandlerContext.write(new ChunkedNioFile(r.getChannel()));
+//            }
+//            ChannelFuture channelFuture = channelHandlerContext.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+//            if (!keepAlive) {
+//                channelFuture.addListener(ChannelFutureListener.CLOSE);
+//            }
+//
+//        }
     }
 }
