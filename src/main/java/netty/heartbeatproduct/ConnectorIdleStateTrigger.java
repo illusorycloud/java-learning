@@ -2,6 +2,7 @@ package netty.heartbeatproduct;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -11,6 +12,7 @@ import io.netty.util.CharsetUtil;
 /**
  * @author illusoryCloud
  */
+@ChannelHandler.Sharable
 public class ConnectorIdleStateTrigger extends ChannelHandlerAdapter {
     /**
      * 心跳包内容

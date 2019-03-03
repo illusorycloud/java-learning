@@ -14,6 +14,12 @@ import netty.heartbeat.HeartBeatClientHandler;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 生产级心跳机制
+ * 客户端
+ *
+ * @author illusoryCloud
+ */
 public class HeartBeatClient {
     protected final HashedWheelTimer timer = new HashedWheelTimer();
 
@@ -26,12 +32,15 @@ public class HeartBeatClient {
         EventLoopGroup group = new NioEventLoopGroup();
 
         boot = new Bootstrap();
-        boot.group(group).channel(NioSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO));
+        boot.group(group)
+                .channel(NioSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO));
 
-        final ConnectionWatchdog watchdog = new ConnectionWatchdog(boot, timer, port,host, true) {
+        final BaseConnectionWatchdog watchdog = new BaseConnectionWatchdog(boot, timer, port, host, true) {
 
+            @Override
             public ChannelHandler[] handlers() {
-                return new ChannelHandler[] {
+                return new ChannelHandler[]{
                         this,
                         new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS),
                         idleStateTrigger,
@@ -55,7 +64,7 @@ public class HeartBeatClient {
                     }
                 });
 
-                future = boot.connect(host,port);
+                future = boot.connect(host, port);
             }
 
             // 以下代码在synchronized同步块外面是安全的

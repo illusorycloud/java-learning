@@ -9,10 +9,15 @@ import io.netty.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 重连检测狗，当发现当前的链路不稳定关闭之后，进行12次重连
+ * 生产级心跳机制
+ * 重连检测狗
+ * 当发现当前的链路不稳定关闭之后，进行最多12次重连
+ * 用在客户端
+ *
+ * @author illusoryCloud
  */
 @ChannelHandler.Sharable
-public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implements TimerTask, ChannelHandlerHolder {
+public abstract class BaseConnectionWatchdog extends ChannelHandlerAdapter implements TimerTask, ChannelHandlerHolder {
     private final Bootstrap bootstrap;
     private final Timer timer;
     private final int port;
@@ -20,10 +25,17 @@ public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implement
     private final String host;
 
     private volatile boolean reconnect = true;
-    private int attempts;
+    /**
+     * 最大重连次数
+     */
+    private static final int MAX_TRY_TIMES = 12;
+    /**
+     * 当前已尝试重连次数
+     * 重连成功后置0
+     */
+    private int tryTimes;
 
-
-    public ConnectionWatchdog(Bootstrap bootstrap, Timer timer, int port, String host, boolean reconnect) {
+    public BaseConnectionWatchdog(Bootstrap bootstrap, Timer timer, int port, String host, boolean reconnect) {
         this.bootstrap = bootstrap;
         this.timer = timer;
         this.port = port;
@@ -39,7 +51,7 @@ public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implement
 
         System.out.println("当前链路已经激活了，重连尝试次数重新置为0");
 
-        attempts = 0;
+        tryTimes = 0;
         ctx.fireChannelActive();
     }
 
@@ -48,10 +60,10 @@ public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implement
         System.out.println("链接关闭");
         if (reconnect) {
             System.out.println("链接关闭，将进行重连");
-            if (attempts < 12) {
-                attempts++;
+            if (tryTimes < MAX_TRY_TIMES) {
+                tryTimes++;
                 //重连的间隔时间会越来越长
-                int timeout = 2 << attempts;
+                int timeout = 2 << tryTimes;
                 timer.newTimeout(this, timeout, TimeUnit.MILLISECONDS);
             }
         }
@@ -72,11 +84,11 @@ public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implement
         //bootstrap已经初始化好了，只需要将handler填入就可以了
         synchronized (bootstrap) {
             bootstrap.handler(new ChannelInitializer<Channel>() {
-
                 @Override
                 protected void initChannel(Channel ch) throws Exception {
-
                     ch.pipeline().addLast(handlers());
+                    ChannelHandler[] handlers = handlers();
+                    System.out.println(handlers.length);
                 }
             });
             future = bootstrap.connect(host, port);
@@ -86,11 +98,11 @@ public abstract class ConnectionWatchdog extends ChannelHandlerAdapter implement
 
             @Override
             public void operationComplete(ChannelFuture f) throws Exception {
-                boolean succeed = f.isSuccess();
-
-                //如果重连失败，则调用ChannelInactive方法，再次出发重连事件，一直尝试12次，如果失败则不再重连
-                if (!succeed) {
+                //如果重连失败，则调用ChannelInactive方法，再次出发重连事件
+                // 一直尝试12次，如果失败则不再重连
+                if (!f.isSuccess()) {
                     System.out.println("重连失败");
+                    //重连失败后 再次触发ChannelInactive() 继续重连
                     f.channel().pipeline().fireChannelInactive();
                 } else {
                     System.out.println("重连成功");

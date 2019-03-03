@@ -9,8 +9,12 @@ import io.netty.channel.ChannelHandler;
  * 继承这个接口的所有子类可以很方便地获取ChannelPipeline中的Handlers
  * 获取到handlers之后方便ChannelPipeline中的handler的初始化和在重连的时候也能很方便
  * 地获取所有的handlers
+ * @author illusoryCloud
  */
 public interface ChannelHandlerHolder {
-
+    /**
+     * 获取channel上的所有handler
+     * @return handlers
+     */
     ChannelHandler[] handlers();
 }

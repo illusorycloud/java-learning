@@ -14,10 +14,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 生产级 心跳机制
  * @author illusoryCloud
  */
 public class HeartBeatServer {
@@ -30,12 +30,13 @@ public class HeartBeatServer {
     }
 
     public void start() {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup boss = new NioEventLoopGroup(1);
+        EventLoopGroup worker = new NioEventLoopGroup();
         try {
-            ServerBootstrap sbs = new ServerBootstrap().group(bossGroup, workerGroup)
+            ServerBootstrap sbs = new ServerBootstrap().group(boss, worker)
+                    //打印一下日志
                     .channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO))
-                    .localAddress(new InetSocketAddress(port)).childHandler(new ChannelInitializer<SocketChannel>() {
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS));
@@ -45,15 +46,17 @@ public class HeartBeatServer {
                             ch.pipeline().addLast(new HeartBeatServerHandler());
                         }
 
-                    }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
-            // 绑定端口，开始接收进来的连接
+                    })
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+            // 绑定端口，开始接收进来的连接 然后一直阻塞在这里
             ChannelFuture future = sbs.bind(port).sync();
 
             System.out.println("Server start listen at " + port);
             future.channel().closeFuture().sync();
         } catch (Exception e) {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
         }
     }
 
