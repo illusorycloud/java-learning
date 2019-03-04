@@ -36,7 +36,7 @@ public class HeartBeatClientHandler extends ChannelHandlerAdapter {
      */
     private static final ByteBuf HEARTBEAT_SEQUENCE = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Heartbeat",
             CharsetUtil.UTF_8));
-    
+
     /**
      * 在出现超时事件时会被触发，包括读空闲超时或者写空闲超时；
      * 这里是客户端 检测的时写超时 即客户端没有向服务端发送消息导致的超时
