@@ -47,7 +47,7 @@ public abstract class BaseConnectionWatchdog extends ChannelHandlerAdapter imple
      * channel链路每次active的时候，将其连接的次数重新☞ 0
      */
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
 
         System.out.println("当前链路已经激活了，重连尝试次数重新置为0");
 
@@ -56,7 +56,7 @@ public abstract class BaseConnectionWatchdog extends ChannelHandlerAdapter imple
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         System.out.println("链接关闭");
         if (reconnect) {
             System.out.println("链接关闭，将进行重连");
@@ -75,10 +75,9 @@ public abstract class BaseConnectionWatchdog extends ChannelHandlerAdapter imple
      * 做的事情就是重连的工作
      *
      * @param timeout 重连超时时间
-     * @throws Exception ex
      */
     @Override
-    public void run(Timeout timeout) throws Exception {
+    public void run(Timeout timeout) {
 
         ChannelFuture future;
         //bootstrap已经初始化好了，只需要将handler填入就可以了
@@ -97,7 +96,7 @@ public abstract class BaseConnectionWatchdog extends ChannelHandlerAdapter imple
         future.addListener(new ChannelFutureListener() {
 
             @Override
-            public void operationComplete(ChannelFuture f) throws Exception {
+            public void operationComplete(ChannelFuture f) {
                 //如果重连失败，则调用ChannelInactive方法，再次出发重连事件
                 // 一直尝试12次，如果失败则不再重连
                 if (!f.isSuccess()) {

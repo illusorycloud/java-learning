@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 生产级 心跳机制
+ *
  * @author illusoryCloud
  */
 public class HeartBeatServer {
-    private final AcceptorIdleStateTrigger idleStateTrigger = new AcceptorIdleStateTrigger();
 
     private int port;
 
@@ -30,17 +30,18 @@ public class HeartBeatServer {
     }
 
     public void start() {
-        EventLoopGroup boss = new NioEventLoopGroup(1);
+        EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         try {
-            ServerBootstrap sbs = new ServerBootstrap().group(boss, worker)
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(boss, worker)
                     //打印一下日志
-                    .channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO))
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) throws Exception {
+                        protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS));
-                            ch.pipeline().addLast(idleStateTrigger);
                             ch.pipeline().addLast("decoder", new StringDecoder());
                             ch.pipeline().addLast("encoder", new StringEncoder());
                             ch.pipeline().addLast(new HeartBeatServerHandler());
@@ -50,7 +51,7 @@ public class HeartBeatServer {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             // 绑定端口，开始接收进来的连接 然后一直阻塞在这里
-            ChannelFuture future = sbs.bind(port).sync();
+            ChannelFuture future = b.bind(port).sync();
 
             System.out.println("Server start listen at " + port);
             future.channel().closeFuture().sync();
@@ -65,7 +66,7 @@ public class HeartBeatServer {
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         } else {
-            port = 8080;
+            port = 8081;
         }
         new HeartBeatServer(port).start();
     }
