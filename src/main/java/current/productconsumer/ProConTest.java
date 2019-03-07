@@ -23,7 +23,7 @@ public class ProConTest {
         //队列最大容量
         Integer Captial = 10;
         //存消息的队列
-        Queue<Message> queue = new ConcurrentLinkedQueue<>();
+        Queue<Message> queue = new ConcurrentLinkedQueue<Message>();
 
         //生产者
         Product p = new Product(queue, Captial, reentrantLock, emptyWait, fullWait);
