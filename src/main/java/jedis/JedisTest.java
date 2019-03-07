@@ -2,24 +2,11 @@ package jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
-import org.junit.Test;
-
 import jedis.domain.User;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import org.junit.Test;
+import redis.clients.jedis.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author illusoryCloud
@@ -207,6 +194,7 @@ public class JedisTest {
         cfg.setMaxIdle(20);
         //最大等待时间 -1 无限
         cfg.setMaxWaitMillis(-1);
+        //在空闲时检查有效性, 默认false.
         cfg.setTestOnBorrow(true);
         JedisCluster jc = new JedisCluster(jedisClusterNode, 6000, 100, cfg);
         //向单机操作一样 会自动从连接池中拿出一个实例来操作。
