@@ -11,6 +11,11 @@ package jedis;
         import redis.clients.jedis.JedisCluster;
         import redis.clients.jedis.JedisPool;
         import redis.clients.jedis.JedisPoolConfig;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import jedis.domain.User;
+import org.junit.Test;
+import redis.clients.jedis.*;
 
         import java.util.Arrays;
         import java.util.HashMap;
@@ -20,6 +25,7 @@ package jedis;
         import java.util.Map;
         import java.util.Set;
         import java.util.UUID;
+import java.util.*;
 
 /**
  * @author illusoryCloud
