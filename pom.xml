@@ -38,6 +38,15 @@
             <artifactId>zookeeper</artifactId>
             <version>3.5.4-beta</version>
         </dependency>
+        <!--zkClient-->
+        <!-- https://mvnrepository.com/artifact/com.101tec/zkclient -->
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.11</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
         <!-- jedis.Jedis -->
         <dependency>
