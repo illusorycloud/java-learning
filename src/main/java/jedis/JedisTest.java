@@ -1,30 +1,34 @@
 package jedis;
 
-        import com.alibaba.fastjson.JSON;
-        import com.alibaba.fastjson.JSONObject;
-
-        import org.junit.Test;
-
-        import jedis.domain.User;
-        import redis.clients.jedis.HostAndPort;
-        import redis.clients.jedis.Jedis;
-        import redis.clients.jedis.JedisCluster;
-        import redis.clients.jedis.JedisPool;
-        import redis.clients.jedis.JedisPoolConfig;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import jedis.domain.User;
+
 import org.junit.Test;
+
+import jedis.domain.User;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import jedis.domain.User;
+
+import org.junit.Test;
+
 import redis.clients.jedis.*;
 
-        import java.util.Arrays;
-        import java.util.HashMap;
-        import java.util.HashSet;
-        import java.util.Iterator;
-        import java.util.List;
-        import java.util.Map;
-        import java.util.Set;
-        import java.util.UUID;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.*;
 
 /**
