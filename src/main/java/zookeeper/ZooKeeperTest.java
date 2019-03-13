@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * ZooKeeper测试
+ *
  * @author illusory
  */
 public class ZooKeeperTest {
@@ -338,7 +340,7 @@ public class ZooKeeperTest {
 
 
     //----------------实际使用场景----.---------------------
-                    //TODO 待续..
+    //TODO 待续..
     @Test
     public void testClientOne() throws IOException, InterruptedException, KeeperException {
         ZKWatcher zkWatcher = new ZKWatcher();
