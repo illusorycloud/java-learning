@@ -22,5 +22,6 @@ public class ClassLoadTest {
         Method helloMethod = clazz.getDeclaredMethod("hello", null);
         helloMethod.invoke(obj, null);
         //恩，是的，我是由 class jvm.classload.MyClassLoader 加载进来的
+
     }
 }

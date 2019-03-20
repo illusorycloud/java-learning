@@ -2,6 +2,12 @@ package jvm.classload;
 
 import java.io.FileInputStream;
 
+/**
+ * 自定义类加载器
+ * 主要重写findClass(String name)方法
+ *
+ * @author illusory
+ */
 public class MyClassLoader extends ClassLoader {
     /**
      * 类路径
