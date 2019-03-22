@@ -1,5 +1,8 @@
 package hash;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +31,8 @@ public class ConsistentHashingWithVirtualNode {
     /**
      * 虚拟节点，key表示虚拟节点的hash值，value表示虚拟节点的名称
      */
-    private static SortedMap<Integer, String> virtualNodes =
-            new TreeMap<Integer, String>();
+    private static SortedMap<Long, String> virtualNodes =
+            new TreeMap<Long, String>();
 
     /**
      * 虚拟节点的数目 不固定
@@ -44,7 +47,7 @@ public class ConsistentHashingWithVirtualNode {
         for (String str : realNodes) {
             for (int i = 0; i < VIRTUAL_NODES; i++) {
                 String virtualNodeName = str + "##VN" + String.valueOf(i);
-                int hash = getHash(virtualNodeName);
+                long hash = hash(virtualNodeName);
                 System.out.println("虚拟节点[" + virtualNodeName + "]被添加, hash值为" + hash);
                 virtualNodes.put(hash, virtualNodeName);
             }
@@ -73,18 +76,50 @@ public class ConsistentHashingWithVirtualNode {
         }
         return hash;
     }
+    /**
+     * hash 运算
+     * @param value
+     * @return
+     */
+    public static Long hash(String value){
+        MessageDigest md5;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 not supported", e);
+        }
+        md5.reset();
+        byte[] keyBytes = null;
+        try {
+            keyBytes = value.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Unknown string :" + value, e);
+        }
 
+        md5.update(keyBytes);
+        byte[] digest = md5.digest();
+
+        // hash code, Truncate to 32-bits
+        long hashCode = ((long) (digest[3] & 0xFF) << 24)
+                | ((long) (digest[2] & 0xFF) << 16)
+                | ((long) (digest[1] & 0xFF) << 8)
+                | (digest[0] & 0xFF);
+
+        long truncateHashCode = hashCode & 0xffffffffL;
+        return truncateHashCode;
+    }
     /**
      * 得到应当路由到的结点
      */
     private static String getServer(String node) {
         // 得到带路由的结点的Hash值
-        int hash = getHash(node);
+//        int hash = getHash(node);
+        Long hash = hash(node);
         // 得到大于该Hash值的所有Map
-        SortedMap<Integer, String> subMap =
+        SortedMap<Long, String> subMap =
                 virtualNodes.tailMap(hash);
         // 第一个Key就是顺时针过去离node最近的那个结点
-        Integer i = subMap.firstKey();
+        Long i = subMap.firstKey();
         // 返回对应的虚拟节点名称，这里字符串稍微截取一下
         String virtualNode = subMap.get(i);
         return virtualNode.substring(0, virtualNode.indexOf("##"));
