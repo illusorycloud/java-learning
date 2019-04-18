@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--<bean id="bookFactory" class="spring.BookFactory"></bean>-->
+    <!--&lt;!&ndash; bean的配置文件 &ndash;&gt;-->
+    <!--<bean id="student" class="spring.Student">-->
+    <!--<property name="name" value="illusory"></property>-->
+    <!--<property name="age" value="23"></property>-->
+    <!--<property name="book" ref="book"></property>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;<bean id="book" class="spring.Book" factory-bean="bookFactory" factory-method="createBook">&ndash;&gt;-->
+    <!--&lt;!&ndash;<bean id="book" class="spring.Book" factory-method="createBookStatic">&ndash;&gt;-->
+    <!--<bean id="book" class="spring.Book">-->
+    <!--<property name="name" value="think in java"></property>-->
+    <!--<property name="type" value="CS"></property>-->
+    <!--</bean>-->
+    <!--开启注解+配置组件扫描-->
+    <context:component-scan base-package="spring" />
+    <!--开启注解-->
+    <!--<context:annotation-config />-->
+    <!-- 启动 @AspectJ 支持 -->
+    <aop:aspectj-autoproxy/>
+</beans>
