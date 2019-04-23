@@ -17,7 +17,42 @@ public class Sort {
 //        insertSort(arr);
 //        selectSort(arr);
 //        quickSort(arr, 0, arr.length - 1);
+        simpleSelectSort(arr);
         System.out.println(Arrays.toString(arr));
+    }
+
+    public static void heapSort(int[] arr) {
+    }
+
+    /**
+     * 简单选择排序 每次找出最小的一个数往前放
+     * <p>
+     * 首先确定循环次数，并且记住当前数字和当前位置。
+     * <p>
+     * 将当前位置后面所有的数与当前数字进行对比，小数赋值给key，并记住小数的位置。
+     * <p>
+     * 比对完成后，将最小的值与第一个数的值交换。
+     * <p>
+     * 重复2、3步。
+     *
+     * @param arr
+     */
+    public static void simpleSelectSort(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            int key = arr[i];
+            int position = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                // 如果比其他数大就交换位置
+                // 找到最小的值和位置
+                if (arr[j] < key) {
+                    key = arr[j];
+                    position = j;
+                }
+            }
+            //进行交换
+            arr[position] = arr[i];
+            arr[i] = key;
+        }
     }
 
     /**
